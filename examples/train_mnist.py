@@ -40,9 +40,8 @@ def train():
     criterion = CrossEntropyLoss()
     optimizer = SGD(model.parameters(), lr=0.1) # Higher LR for single batch
     
-    for epoch in range(50):
+    for epoch in range(10):
         for x, y in dl_tr:
-            # print(x.shape, y.shape)
             logits = model(x)
             loss = criterion(logits, y)
             

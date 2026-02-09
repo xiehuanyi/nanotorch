@@ -1,5 +1,5 @@
 import numpy as np
-from nanotorch.tensor import Parameter
+from nanotorch.tensor import Parameter, Tensor
 
 class Module:
     def parameters(self):
@@ -36,13 +36,26 @@ class ReLU(Module):
         return x.relu()
 
 
-class BatchNorm2D(Module):
-    def __init__(self, dim, eps=1e-5, requires_grad=True, dtype=np.float32):
+class BatchNorm1d(Module):
+    def __init__(self, dim, eps=1e-5, momentum=0.1, requires_grad=True, dtype=np.float32):
         self.eps = eps
-        self.gamma = Parameter(np.ones((dim,)), requires_grad=requires_grad, dtype=dtype)
-        self.beta = Parameter(np.zeros((dim,)), requires_grad=requires_grad, dtype=dtype)
+        self.momentum = momentum # 用于更新 running_stats
+        self.training = True     # 标记当前是训练还是推理模式
+        self.gamma = Parameter(np.ones((1, dim), dtype=dtype), requires_grad=requires_grad)
+        self.beta = Parameter(np.zeros((1, dim), dtype=dtype), requires_grad=requires_grad)
+        self.running_mean = np.zeros((1, dim), dtype=dtype)
+        self.running_var = np.ones((1, dim), dtype=dtype)
     
     def forward(self, x):
-        mean = x.mean(dim=0, keepdims=True)
-        var = x.var(dim=0, keepdims=True)
-        return (x - mean) / np.sqrt(var + self.eps) * self.gamma + self.beta
+        if self.training:
+            mean = x.mean(dim=0, keepdims=True)
+            var = x.var(dim=0, keepdims=True)
+            x_hat = (x - mean) / (var + Tensor(self.eps, requires_grad=False)).sqrt()
+            self.running_mean = (1 - self.momentum) * self.running_mean + self.momentum * mean.data
+            self.running_var = (1 - self.momentum) * self.running_var + self.momentum * var.data
+        else:
+            r_mean = Tensor(self.running_mean, requires_grad=False)
+            r_var = Tensor(self.running_var, requires_grad=False)            
+            x_hat = (x - r_mean) / (r_var + Tensor(self.eps, requires_grad=False)).sqrt()
+
+        return x_hat * self.gamma + self.beta

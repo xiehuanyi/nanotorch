@@ -2,7 +2,7 @@ import numpy as np
 
 class Tensor:
     __array_priority__ = 1000
-    def __init__(self, data, dtype=np.float32, requires_grad=True, _children=()):
+    def __init__(self, data, dtype=np.float32, requires_grad=False, _children=()):
         self.dtype = dtype
         self.requires_grad = requires_grad
 

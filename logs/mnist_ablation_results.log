@@ -1,0 +1,64 @@
+# MNIST Ablation Study Results
+# Generated on: 2026-02-09
+# Experiment: Model Architecture and Optimizer Comparison
+
+============================================================
+ABLATION EXPERIMENT RESULTS SUMMARY
+============================================================
+
+MODEL ARCHITECTURE COMPARISON:
+--------------------------------
+LINEAR:
+  sgd     : 0.9169
+  adam    : 0.9200
+
+LINEAR_RELU:
+  sgd     : 0.9650
+  adam    : 0.9750
+
+LINEAR_BN:
+  sgd     : 0.9113
+  adam    : 0.9166
+
+LINEAR_RELU_BN:
+  sgd     : 0.9707
+  adam    : 0.9720
+
+DETAILED RESULTS:
+------------------
+linear_sgd: 0.9169
+linear_adam: 0.9200
+linear_relu_sgd: 0.9650
+linear_relu_adam: 0.9750
+linear_bn_sgd: 0.9113
+linear_bn_adam: 0.9166
+linear_relu_bn_sgd: 0.9707
+linear_relu_bn_adam: 0.9720
+
+KEY FINDINGS:
+-------------
+1. ReLU activation significantly improves performance (+5% accuracy gain)
+2. BatchNorm alone performs poorly but works well when combined with ReLU
+3. Adam optimizer generally outperforms SGD across all architectures
+4. Best performing combination: Linear+ReLU+Adam (97.50% accuracy)
+5. Worst performing combination: Linear+BN+SGD (91.13% accuracy)
+
+PERFORMANCE RANKING:
+--------------------
+1. Linear+ReLU+Adam: 97.50%
+2. Linear+ReLU+BN+Adam: 97.20%
+3. Linear+ReLU+BN+SGD: 97.07%
+4. Linear+ReLU+SGD: 96.50%
+5. Linear+Adam: 92.00%
+6. Linear+SGD: 91.69%
+7. Linear+BN+Adam: 91.66%
+8. Linear+BN+SGD: 91.13%
+
+EXPERIMENT CONFIGURATION:
+-------------------------
+- Dataset: MNIST (784 features, 10 classes)
+- Training epochs: 5
+- Batch size: 64
+- Test split: 10%
+- Random seed: 42
+- Learning rates: SGD (0.1), Adam (0.001)
