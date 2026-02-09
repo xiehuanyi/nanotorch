@@ -115,7 +115,7 @@ class MLP(Module):
     def __init__(self):
         super().__init__()
         self.fc1 = Linear(784, 256)
-        self.bn1 = BatchNorm2D(256)
+        self.bn1 = BatchNorm1D(256)
         self.relu1 = ReLU()
         self.fc2 = Linear(256, 10)
     
@@ -155,8 +155,6 @@ python train_mnist.py
 
 **性能表现：**
 - 测试准确率：**97.60%**
-- 训练时间：约5-10分钟（CPU）
-- 模型结构：784 → 128 → 10
 
 ## 🧪 运行测试
 
